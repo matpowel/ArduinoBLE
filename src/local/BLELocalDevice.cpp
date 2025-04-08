@@ -239,6 +239,11 @@ void BLELocalDevice::poll(unsigned long timeout)
   HCI.poll(timeout);
 }
 
+void BLELocalDevice::poll(unsigned long timeout, uint16_t maxBytes)
+{
+  HCI.poll(timeout, maxBytes);
+}
+
 bool BLELocalDevice::connected() const
 {
   HCI.poll();
@@ -281,6 +286,17 @@ int BLELocalDevice::rssi()
   }
 
   return 127;
+}
+
+uint16_t BLELocalDevice::getMTU()
+{
+  BLEDevice central = ATT.central();
+
+  if (central) {
+    return central.getMTU();
+  }
+
+  return -1;
 }
 
 bool BLELocalDevice::setAdvertisedServiceUuid(const char* advertisedServiceUuid)

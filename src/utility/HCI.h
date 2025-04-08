@@ -61,6 +61,7 @@ public:
 
   virtual void poll();
   virtual void poll(unsigned long timeout);
+  virtual void poll(unsigned long timeout, uint16_t maxBytes);
 
   virtual int reset();
   virtual int readLocalVersion(uint8_t& hciVer, uint16_t& hciRev, uint8_t& lmpVer,

@@ -682,6 +682,8 @@ void ATTClass::mtuReq(uint16_t connectionHandle, uint8_t dlen, uint8_t data[])
     return;
   }
 
+  // Serial.print("ATTClass::mtuReq requested MTU of ");
+  // Serial.println(mtu);
   if (mtu > _maxMtu) {
     mtu = _maxMtu;
   }
@@ -698,6 +700,8 @@ void ATTClass::mtuReq(uint16_t connectionHandle, uint8_t dlen, uint8_t data[])
     uint16_t mtu;
   } mtuResp = { ATT_OP_MTU_RESP, mtu };
 
+  // Serial.print(".. responded with MTU of ");
+  // Serial.println(mtu);
   HCI.sendAclPkt(connectionHandle, ATT_CID, sizeof(mtuResp), &mtuResp);
 }
 
@@ -718,6 +722,9 @@ void ATTClass::mtuResp(uint16_t connectionHandle, uint8_t dlen, uint8_t data[])
   if (dlen != 2) {
     return;
   }
+
+  Serial.print("ATTClass::mtuResp requested MTU of ");
+  Serial.println(mtu);
 
   for (int i = 0; i < ATT_MAX_PEERS; i++) {
     if (_peers[i].connectionHandle == connectionHandle) {

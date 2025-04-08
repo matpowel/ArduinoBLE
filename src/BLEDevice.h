@@ -43,6 +43,7 @@ public:
 
   virtual void poll();
   virtual void poll(unsigned long timeout);
+  virtual void poll(unsigned long timeout, uint16_t maxBytes);
 
   virtual bool connected() const;
   virtual bool disconnect();
@@ -68,6 +69,7 @@ public:
   int manufacturerData(uint8_t value[], int length) const;
 
   virtual int rssi();
+  virtual uint16_t getMTU() const;
 
   bool connect();
   bool discoverAttributes();

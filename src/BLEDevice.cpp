@@ -50,12 +50,23 @@ BLEDevice::~BLEDevice()
 
 void BLEDevice::poll()
 {
+  //Serial.println("BLEDevice::poll");
   HCI.poll();
+  //Serial.println("BLEDevice::poll ENDED");
 }
 
 void BLEDevice::poll(unsigned long timeout)
 {
+  //Serial.println("BLEDevice::poll(timeout)");
   HCI.poll(timeout);
+  //Serial.println("BLEDevice::poll ENDED");
+}
+
+void BLEDevice::poll(unsigned long timeout, uint16_t maxBytes)
+{
+  //Serial.println("BLEDevice::poll(timeout, maxBytes)");
+  HCI.poll(timeout, maxBytes);
+  //Serial.println("BLEDevice::poll ENDED");
 }
 
 bool BLEDevice::connected() const
@@ -259,6 +270,11 @@ int BLEDevice::rssi()
   }
 
   return _rssi;
+}
+
+uint16_t BLEDevice::getMTU() const
+{
+	return ATT.mtu(ATT.connectionHandle(_addressType, _address));
 }
 
 bool BLEDevice::connect()
@@ -575,4 +591,3 @@ bool BLEDevice::discovered()
   // expect, 0x03 or 0x04 flag to be set
   return (_advertisementTypeMask & 0x18) != 0;
 }
-

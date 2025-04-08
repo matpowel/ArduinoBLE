@@ -122,10 +122,14 @@ void HCIClass::end()
 
 void HCIClass::poll()
 {
-  poll(0);
+  poll(0, 0);
 }
 
-void HCIClass::poll(unsigned long timeout)
+void HCIClass::poll(unsigned long timeout) {
+  poll(timeout, 0);
+}
+
+void HCIClass::poll(unsigned long timeout, uint16_t maxBytes)
 {
 #ifdef ARDUINO_AVR_UNO_WIFI_REV2
   digitalWrite(NINA_RTS, LOW);
@@ -135,7 +139,14 @@ void HCIClass::poll(unsigned long timeout)
     HCITransport.wait(timeout);
   }
 
-  while (HCITransport.available()) {
+  //uint16_t bytesRead = 0;
+  //Serial.println("HCI::poll reading maximum of 20 bytes");
+
+  while (HCITransport.available()) { // && bytesRead <= 20) {
+    // Serial.print("-- HCI::poll has read ");
+    // Serial.print(bytesRead);
+    // Serial.println("bytes");
+
     byte b = HCITransport.read();
 
     if (_recvIndex >= sizeof(_recvBuffer)) {
@@ -189,11 +200,13 @@ void HCIClass::poll(unsigned long timeout)
         _debug->println(b, HEX);
       }
     }
+    //bytesRead++;
   }
 
 #ifdef ARDUINO_AVR_UNO_WIFI_REV2
   digitalWrite(NINA_RTS, HIGH);
 #endif
+  //Serial.println("END OF HCI POLL");
 }
 
 int HCIClass::reset()
@@ -289,6 +302,9 @@ int HCIClass::readLeBufferSize(uint16_t& pktLen, uint8_t& maxPkt)
     _maxPkt = maxPkt = leBufferSize->maxPkt;
 
 #ifndef __AVR__
+    // Serial.println("!!!!!!!!!!!!!!!! AVR !!!!!!!!!!!!!!!!");
+    // Serial.println(pktLen);
+    // Serial.println(_maxPkt);
     ATT.setMaxMtu(pktLen - 9); // max pkt len - ACL header size
 #endif
   }
